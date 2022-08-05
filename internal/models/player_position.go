@@ -33,3 +33,30 @@ func (pp PlayerPosition) Print() {
 		fmt.Println(fmt.Sprintf("BB: %s", *pp.BB))
 	}
 }
+
+func (pp PlayerPosition) ConvertToPositionMap() (nameToPos map[string]string, posToName map[string]string) {
+	nameToPos = make(map[string]string)
+	posToName = make(map[string]string)
+	if pp.UTG != nil {
+		posToName["UTG"] = *pp.UTG
+	}
+	if pp.MP != nil {
+		posToName["MP"] = *pp.MP
+	}
+	if pp.CO != nil {
+		posToName["CO"] = *pp.CO
+	}
+	if pp.BTN != nil {
+		posToName["BTN"] = *pp.BTN
+	}
+	if pp.SB != nil {
+		posToName["SB"] = *pp.SB
+	}
+	if pp.BB != nil {
+		posToName["BB"] = *pp.BB
+	}
+	for pos, name := range posToName {
+		nameToPos[name] = pos
+	}
+	return
+}

@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"github.com/shallwepoker/ggpoker-hands-converter/internal/consts"
 	"github.com/shallwepoker/ggpoker-hands-converter/internal/models"
 	"io/ioutil"
 	"strings"
@@ -22,9 +23,9 @@ func ReadGGHandsFile(handsFilePath string) (separateHands []string, err error) {
 		handContent := ""
 		if strings.HasPrefix(line, "Poker Hand #") {
 			handContentStartIndex := i
-			handContent = fileLines[i]+"\n"
+			handContent = fileLines[i] + "\n"
 			i++
-			for j := handContentStartIndex+1; j < len(fileLines); j++ {
+			for j := handContentStartIndex + 1; j < len(fileLines); j++ {
 				if strings.HasPrefix(fileLines[j], "Poker Hand #") {
 					break
 				}
@@ -32,7 +33,7 @@ func ReadGGHandsFile(handsFilePath string) (separateHands []string, err error) {
 					i++
 					continue
 				}
-				handContent = handContent + fileLines[j]+"\n"
+				handContent = handContent + fileLines[j] + "\n"
 				i++
 			}
 		}
@@ -103,7 +104,7 @@ func ParseHandHistoryToPlayerPositions(hh models.HandHistory) (pp models.PlayerP
 		btnIndex := findIndexOf(seats, btnSeatNo)
 		btnPlayerName := GetPlayerNameFromLine(seats[btnIndex])
 		pp.BTN = &btnPlayerName
-		BBPlayerIndex := (btnIndex+1) % 2
+		BBPlayerIndex := (btnIndex + 1) % 2
 		BBPlayerName := GetPlayerNameFromLine(seats[BBPlayerIndex])
 		pp.BB = &BBPlayerName
 		return
@@ -112,10 +113,10 @@ func ParseHandHistoryToPlayerPositions(hh models.HandHistory) (pp models.PlayerP
 		btnIndex := findIndexOf(seats, btnSeatNo)
 		btnPlayerName := GetPlayerNameFromLine(seats[btnIndex])
 		pp.BTN = &btnPlayerName
-		SBPlayerIndex := (btnIndex+1) % 3
+		SBPlayerIndex := (btnIndex + 1) % 3
 		SBPlayerName := GetPlayerNameFromLine(seats[SBPlayerIndex])
 		pp.SB = &SBPlayerName
-		BBPlayerIndex := (SBPlayerIndex+1) % 3
+		BBPlayerIndex := (SBPlayerIndex + 1) % 3
 		BBPlayerName := GetPlayerNameFromLine(seats[BBPlayerIndex])
 		pp.BB = &BBPlayerName
 		return
@@ -124,13 +125,13 @@ func ParseHandHistoryToPlayerPositions(hh models.HandHistory) (pp models.PlayerP
 		btnIndex := findIndexOf(seats, btnSeatNo)
 		btnPlayerName := GetPlayerNameFromLine(seats[btnIndex])
 		pp.BTN = &btnPlayerName
-		SBPlayerIndex := (btnIndex+1) % 4
+		SBPlayerIndex := (btnIndex + 1) % 4
 		SBPlayerName := GetPlayerNameFromLine(seats[SBPlayerIndex])
 		pp.SB = &SBPlayerName
-		BBPlayerIndex := (SBPlayerIndex+1) % 4
+		BBPlayerIndex := (SBPlayerIndex + 1) % 4
 		BBPlayerName := GetPlayerNameFromLine(seats[BBPlayerIndex])
 		pp.BB = &BBPlayerName
-		UTGPlayerIndex := (BBPlayerIndex+1) % 4
+		UTGPlayerIndex := (BBPlayerIndex + 1) % 4
 		UTGPlayerName := GetPlayerNameFromLine(seats[UTGPlayerIndex])
 		pp.UTG = &UTGPlayerName
 		return
@@ -139,16 +140,16 @@ func ParseHandHistoryToPlayerPositions(hh models.HandHistory) (pp models.PlayerP
 		btnIndex := findIndexOf(seats, btnSeatNo)
 		btnPlayerName := GetPlayerNameFromLine(seats[btnIndex])
 		pp.BTN = &btnPlayerName
-		SBPlayerIndex := (btnIndex+1) % 5
+		SBPlayerIndex := (btnIndex + 1) % 5
 		SBPlayerName := GetPlayerNameFromLine(seats[SBPlayerIndex])
 		pp.SB = &SBPlayerName
-		BBPlayerIndex := (SBPlayerIndex+1) % 5
+		BBPlayerIndex := (SBPlayerIndex + 1) % 5
 		BBPlayerName := GetPlayerNameFromLine(seats[BBPlayerIndex])
 		pp.BB = &BBPlayerName
-		UTGPlayerIndex := (BBPlayerIndex+1) % 5
+		UTGPlayerIndex := (BBPlayerIndex + 1) % 5
 		UTGPlayerName := GetPlayerNameFromLine(seats[UTGPlayerIndex])
 		pp.UTG = &UTGPlayerName
-		MPPlayerIndex := (UTGPlayerIndex+1) % 5
+		MPPlayerIndex := (UTGPlayerIndex + 1) % 5
 		MPPlayerName := GetPlayerNameFromLine(seats[MPPlayerIndex])
 		pp.MP = &MPPlayerName
 		return
@@ -157,24 +158,79 @@ func ParseHandHistoryToPlayerPositions(hh models.HandHistory) (pp models.PlayerP
 		btnIndex := findIndexOf(seats, btnSeatNo)
 		btnPlayerName := GetPlayerNameFromLine(seats[btnIndex])
 		pp.BTN = &btnPlayerName
-		SBPlayerIndex := (btnIndex+1) % 6
+		SBPlayerIndex := (btnIndex + 1) % 6
 		SBPlayerName := GetPlayerNameFromLine(seats[SBPlayerIndex])
 		pp.SB = &SBPlayerName
-		BBPlayerIndex := (SBPlayerIndex+1) % 6
+		BBPlayerIndex := (SBPlayerIndex + 1) % 6
 		BBPlayerName := GetPlayerNameFromLine(seats[BBPlayerIndex])
 		pp.BB = &BBPlayerName
-		UTGPlayerIndex := (BBPlayerIndex+1) % 6
+		UTGPlayerIndex := (BBPlayerIndex + 1) % 6
 		UTGPlayerName := GetPlayerNameFromLine(seats[UTGPlayerIndex])
 		pp.UTG = &UTGPlayerName
-		MPPlayerIndex := (UTGPlayerIndex+1) % 6
+		MPPlayerIndex := (UTGPlayerIndex + 1) % 6
 		MPPlayerName := GetPlayerNameFromLine(seats[MPPlayerIndex])
 		pp.MP = &MPPlayerName
-		COPlayerIndex := (MPPlayerIndex+1) % 6
+		COPlayerIndex := (MPPlayerIndex + 1) % 6
 		COPlayerName := GetPlayerNameFromLine(seats[COPlayerIndex])
 		pp.CO = &COPlayerName
 		return
 	}
 	return
+}
+
+// full ring 6 max table
+func ParsePreflop6MaxTableToRFIRange(rfiHandCnt *int, preflopPart string, playerPositions models.PlayerPosition, rfiMap *map[string]*models.PreflopRFIRange) {
+	nameToPos, _ := playerPositions.ConvertToPositionMap()
+	heroPos := nameToPos["Hero"]
+	if heroPos == "BB" {
+		return
+	}
+	preflopLines := strings.Split(preflopPart, "\n")
+	heroHoleCards := ""
+	for i := 0; i < 6; i++ {
+		if strings.Contains(preflopLines[i], "Hero") {
+			heroHoleCards = strings.TrimPrefix(preflopLines[i], "Dealt to Hero")
+			break
+		}
+	}
+	heroHoleCards = strings.Trim(heroHoleCards, " ")
+	heroHoleCards = UniformHoleCardStr(heroHoleCards)
+	utgActionLine := preflopLines[6]
+	mpActionLine := preflopLines[7]
+	coActionLine := preflopLines[8]
+	btnActionLine := preflopLines[9]
+	sbActionLine := preflopLines[10]
+	switch heroPos {
+	case "UTG":
+		*rfiHandCnt += 1
+		contributeToRFI(utgActionLine, (*rfiMap)["UTG"], heroHoleCards)
+	case "MP":
+		if strings.Contains(utgActionLine, "fold") {
+			*rfiHandCnt += 1
+			contributeToRFI(mpActionLine, (*rfiMap)["MP"], heroHoleCards)
+		}
+	case "CO":
+		if strings.Contains(utgActionLine, "fold") &&
+			strings.Contains(mpActionLine, "fold") {
+			*rfiHandCnt += 1
+			contributeToRFI(coActionLine, (*rfiMap)["CO"], heroHoleCards)
+		}
+	case "BTN":
+		if strings.Contains(utgActionLine, "fold") &&
+			strings.Contains(mpActionLine, "fold") &&
+			strings.Contains(coActionLine, "fold") {
+			*rfiHandCnt += 1
+			contributeToRFI(btnActionLine, (*rfiMap)["BTN"], heroHoleCards)
+		}
+	case "SB":
+		if strings.Contains(utgActionLine, "fold") &&
+			strings.Contains(mpActionLine, "fold") &&
+			strings.Contains(coActionLine, "fold") &&
+			strings.Contains(btnActionLine, "fold") {
+			*rfiHandCnt += 1
+			contributeToRFI(sbActionLine, (*rfiMap)["SB"], heroHoleCards)
+		}
+	}
 }
 
 func findIndexOf(strSlice []string, targetStrPrefix string) int {
@@ -189,5 +245,53 @@ func findIndexOf(strSlice []string, targetStrPrefix string) int {
 func GetPlayerNameFromLine(line string) string {
 	index1 := strings.Index(line, ":")
 	index2 := strings.Index(line, "(")
-	return line[index1+2:index2-1]
+	return line[index1+2 : index2-1]
+}
+
+// UniformHoleCardStr gg holecard format: [As Ad]
+func UniformHoleCardStr(holecardStr string) string {
+	holecardStr = strings.TrimPrefix(holecardStr, "[")
+	holecardStr = strings.TrimSuffix(holecardStr, "]")
+	if holecardStr[0] == holecardStr[3] {
+		return string(holecardStr[0]) + string(holecardStr[0])
+	} else {
+		if holecardStr[1] == holecardStr[4] {
+			if consts.CardCharToWeight[string(holecardStr[0])] > consts.CardCharToWeight[string(holecardStr[3])] {
+				return string(holecardStr[0]) + string(holecardStr[3]) + "s"
+			} else {
+				return string(holecardStr[3]) + string(holecardStr[0]) + "s"
+			}
+		} else {
+			if consts.CardCharToWeight[string(holecardStr[0])] > consts.CardCharToWeight[string(holecardStr[3])] {
+				return string(holecardStr[0]) + string(holecardStr[3]) + "o"
+			} else {
+				return string(holecardStr[3]) + string(holecardStr[0]) + "o"
+			}
+		}
+	}
+}
+
+func contributeToRFI(actionLine string, rfi *models.PreflopRFIRange, holecard string) {
+	if strings.Contains(actionLine, "raise") {
+		if value, exists := rfi.HolecardMap[holecard]; exists {
+			value.Raise += 1
+			rfi.HolecardMap[holecard] = value
+		} else {
+			rfi.HolecardMap[holecard] = models.RFIActions{Raise: 1}
+		}
+	} else if strings.Contains(actionLine, "fold") {
+		if value, exists := rfi.HolecardMap[holecard]; exists {
+			value.Fold += 1
+			rfi.HolecardMap[holecard] = value
+		} else {
+			rfi.HolecardMap[holecard] = models.RFIActions{Fold: 1}
+		}
+	} else {
+		if value, exists := rfi.HolecardMap[holecard]; exists {
+			value.Call += 1
+			rfi.HolecardMap[holecard] = value
+		} else {
+			rfi.HolecardMap[holecard] = models.RFIActions{Call: 1}
+		}
+	}
 }

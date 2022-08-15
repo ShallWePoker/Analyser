@@ -1,0 +1,11 @@
+port: 8889
+
+urlPrefix: /api/v1
+
+log:
+  writeFile: false
+  fileDir: logs
+  fileName: shallwepoker-analyer.log
+
+time:
+  timezoneStr: Asia/Shanghai

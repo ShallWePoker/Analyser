@@ -3,13 +3,13 @@ package routers
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/shallwepoker/ggpoker-hands-converter/internal/configs"
 	"github.com/shallwepoker/ggpoker-hands-converter/internal/requests"
 	"github.com/shallwepoker/ggpoker-hands-converter/internal/services"
 )
 
 func GroupPreflopRanges(r *gin.Engine) {
-	// TODO api/v1 read from configs
-	group := r.Group(fmt.Sprintf("%s/preflop-ranges", "api/v1"))
+	group := r.Group(fmt.Sprintf("%s/preflop-ranges", configs.Config.UrlPrefix))
 
 	group.POST("/rfi-ranges", wrapper(generateRFIRanges))
 }

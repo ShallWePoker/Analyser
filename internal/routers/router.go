@@ -2,16 +2,19 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/shallwepoker/ggpoker-hands-converter/internal/loggers"
 )
 
 
 func NewRouter() *gin.Engine {
 	r := gin.New()
+	// 	r.Use(cors.Default())
 	r.Use(CORSMiddleware())
 
 	r.NoMethod(HandleNotFound)
 	r.NoRoute(HandleNotFound)
 	r.Use(gin.Recovery())
+	r.Use(loggers.GinLogger(logger))
 
 	GroupPreflopRanges(r)
 	return r

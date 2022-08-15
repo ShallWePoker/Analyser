@@ -20,7 +20,7 @@ func main() {
 	fmt.Printf("combined txt file path: %s\n", *combinedTxtPath)
 	fmt.Printf("player name: %s\n", *playerName)
 
-	allTxtFiles, err := listAllTxtFiles(*handsTxtFolder)
+	allTxtFiles, err := ListAllTxtFiles(*handsTxtFolder)
 	if err != nil {
 		panic(err)
 	}
@@ -69,7 +69,7 @@ func main() {
 	}
 }
 
-func listAllTxtFiles(dir string) (filePaths []string, err error) {
+func ListAllTxtFiles(dir string) (filePaths []string, err error) {
 	dirInfo, err := os.Stat(dir)
 	if err != nil {
 		return

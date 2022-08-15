@@ -7,15 +7,15 @@ import (
 )
 
 type PreflopRFIRange struct {
-	PlayerName  string
-	Position    string
-	HolecardMap map[string]RFIActions // [3]int : raise, fold, call
+	PlayerName  string					`json:"playerName"`
+	Position    string					`json:"-"`
+	HolecardMap map[string]RFIActions   `json:"holecardsMap"`    // [3]int : raise, fold, call
 }
 
 type RFIActions struct {
-	Raise int
-	Fold  int
-	Call  int
+	Raise int			`json:"raise"`
+	Fold  int			`json:"fold"`
+	Call  int			`json:"call"`
 }
 
 func (rfiActions RFIActions) ToString() string {

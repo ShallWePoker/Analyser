@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/shallwepoker/ggpoker-hands-converter/internal/configs"
+	"github.com/shallwepoker/ggpoker-hands-converter/internal/dao"
 	"github.com/shallwepoker/ggpoker-hands-converter/internal/routers"
 	"net/http"
 	"os"
@@ -12,7 +14,9 @@ import (
 )
 
 func main() {
-	port := 8889
+	dao.InitTables()
+
+	port := configs.Config.Port
 	router := routers.NewRouter()
 
 
@@ -25,7 +29,6 @@ func main() {
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			panic(fmt.Sprintf("Listen: %s\n", err))
 		}
-
 	}()
 
 	quit := make(chan os.Signal)

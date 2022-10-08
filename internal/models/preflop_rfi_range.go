@@ -7,26 +7,26 @@ import (
 )
 
 type PreflopRFIRange struct {
-	PlayerName  string					`json:"playerName"`
-	Position    string					`json:"-"`
-	HolecardMap map[string]RFIActions   `json:"holecardsMap"`    // [3]int : raise, fold, call
+	PlayerName  string             `json:"playerName"`
+	Position    string             `json:"-"`
+	HolecardMap map[string]Actions `json:"holecardMap"`
 }
 
-type RFIActions struct {
+type Actions struct {
 	Raise int			`json:"raise"`
 	Fold  int			`json:"fold"`
 	Call  int			`json:"call"`
 }
 
-func (rfiActions RFIActions) ToString() string {
-	return fmt.Sprintf("[r%df%dc%d]", rfiActions.Raise, rfiActions.Fold, rfiActions.Call)
+func (actions Actions) ToString() string {
+	return fmt.Sprintf("[r%df%dc%d]", actions.Raise, actions.Fold, actions.Call)
 }
 
 func InitPreflopRFIRange(name, position string) PreflopRFIRange {
 	return PreflopRFIRange{
 		PlayerName:  name,
 		Position:    position,
-		HolecardMap: make(map[string]RFIActions),
+		HolecardMap: make(map[string]Actions),
 	}
 }
 
@@ -39,7 +39,7 @@ func (rfi PreflopRFIRange) PrintRFIMatrix() {
 			if freq, exists := rfi.HolecardMap[holecardStr]; exists {
 				holecardsSlice = append(holecardsSlice, fmt.Sprintf("%s %v", holecardStr, freq.ToString()))
 			} else {
-				holecardsSlice = append(holecardsSlice, fmt.Sprintf("%s %v", holecardStr, RFIActions{}.ToString()))
+				holecardsSlice = append(holecardsSlice, fmt.Sprintf("%s %v", holecardStr, Actions{}.ToString()))
 			}
 		}
 		rowStr := strings.Join(holecardsSlice, "|")

@@ -5,7 +5,24 @@ urlPrefix: /api/v1
 log:
   writeFile: false
   fileDir: logs
-  fileName: shallwepoker-analyer.log
+  fileName: shallwepoker-analyzer.log
 
 time:
   timezoneStr: Asia/Shanghai
+
+db:
+  servertype: postgres # 目前只支持postgresql，可写postgres/postgresql
+  username: postgres # 用户名
+  password: postgres # 密码
+  host: localhost # host地址
+  port: 5432 # 服务端口
+  database: postgres # 数据库名称
+  maxopenconns: 10 # 数据库连接最大数量
+  maxidleconns: 2 # 空闲连接池最大数量
+  sslmode: disable
+
+jwt:
+  signingKey: "DebugSigningKey"
+  ExpiresTime: "7d"
+  BufferTime: "1d"
+  issuer: "shallwepoker-analyzer-backend"

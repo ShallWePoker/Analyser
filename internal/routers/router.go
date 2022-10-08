@@ -16,7 +16,12 @@ func NewRouter() *gin.Engine {
 	r.Use(gin.Recovery())
 	r.Use(loggers.GinLogger(logger))
 
-	GroupPreflopRanges(r)
+	PublicGroup := r.Group("")
+	GroupSysUsers(PublicGroup)
+
+	PrivateGroup := r.Group("")
+	PrivateGroup.Use(JWTAuth())
+	GroupPreflopRanges(PrivateGroup)
 	return r
 }
 
@@ -30,7 +35,7 @@ func CORSMiddleware() gin.HandlerFunc {
 
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(204)
-			return
+			//return
 		}
 
 		c.Next()

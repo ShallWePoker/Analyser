@@ -8,10 +8,11 @@ import (
 	"github.com/shallwepoker/ggpoker-hands-converter/internal/services"
 )
 
-func GroupPreflopRanges(r *gin.Engine) {
-	group := r.Group(fmt.Sprintf("%s/preflop-ranges", configs.Config.UrlPrefix))
+func GroupPreflopRanges(g *gin.RouterGroup) {
+	group := g.Group(fmt.Sprintf("%s/preflop-ranges", configs.Config.UrlPrefix))
 
 	group.POST("/rfi-ranges", wrapper(generateRFIRanges))
+	group.GET("/test-out", wrapper(testOutToken))
 }
 
 func generateRFIRanges(c *gin.Context) error {
@@ -25,4 +26,8 @@ func generateRFIRanges(c *gin.Context) error {
 		return err
 	}
 	return SuccessResp(c, resp)
+}
+
+func testOutToken(c *gin.Context) error {
+	return SuccessResp(c, gin.H{"key": "value"})
 }

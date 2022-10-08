@@ -13,6 +13,8 @@ type ProjectConfig struct {
 	UrlPrefix string
 	Log       LogConfig
 	Time      TimeConfig
+	Db        DbConfig
+	JWT       JWTConf
 }
 
 type LogConfig struct {
@@ -24,6 +26,25 @@ type LogConfig struct {
 type TimeConfig struct {
 	TimeZoneStr string
 	TimeZone    *time.Location
+}
+
+type DbConfig struct {
+	ServerType   string
+	Username     string
+	Password     string
+	Host         string
+	Port         int
+	Database     string
+	MaxOpenConns int
+	MaxIdleConns int
+	Sslmode      string
+}
+
+type JWTConf struct {
+	SigningKey  string // jwt签名
+	ExpiresTime string // 过期时间
+	BufferTime  string // 缓冲时间
+	Issuer      string // 签发者
 }
 
 func init() {

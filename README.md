@@ -1,2 +1,2 @@
-ShallWePoker: Analyser
+ShallWePoker: Analyzer
 analysing poker hands statistics
